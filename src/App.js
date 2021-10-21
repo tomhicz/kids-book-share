@@ -3,8 +3,9 @@ import "./App.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase.js";
 import { useEffect, useState } from "react";
-import Book from "./components/book";
-import User from "./components/user";
+
+import Library from "./components/Library";
+import Users from "./components/Users";
 import AddBook from "./components/addBook";
 
 //Methods
@@ -18,7 +19,7 @@ import AddBook from "./components/addBook";
 
 function App() {
   //State
-  const [users, setUsers] = useState([]);
+  const [usersArr, setUsers] = useState([]);
   const [library, setLibrary] = useState([]);
   const [view, setView] = useState("library");
 
@@ -56,22 +57,8 @@ function App() {
         <button onClick={() => setView("library")}>Library</button>
         <button onClick={() => setView("users")}>Show Users</button>
         {view === "addbook" && <AddBook setView={setView} />}
-        {view === "library" && (
-          <div>
-            <h2>Books:</h2>
-            {library.map((val, id) => {
-              return <Book key={id} book={val} />;
-            })}
-          </div>
-        )}
-        {view === "users" && (
-          <div>
-            <h2>Users</h2>
-            {users.map((val, id) => {
-              return <User key={id} user={val} />;
-            })}
-          </div>
-        )}
+        {view === "library" && <Library library={library} />}
+        {view === "users" && <Users usersArr={usersArr} />}
       </div>
     </div>
   );
