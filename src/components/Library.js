@@ -6,12 +6,12 @@ import Book from "./book";
 
 //handlers
 
-export default function Library({ library }) {
+export default function Library({ library, updateBook }) {
   return (
     <div>
       <h2>Books:</h2>
       {library.map((val, id) => {
-        return <Book key={id} book={val} />;
+        return <Book key={id} book={val} updateBook={updateBook} />;
       })}
     </div>
   );

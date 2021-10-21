@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
 import { useEffect, useState } from "react";
 
@@ -29,9 +29,10 @@ function App() {
       const libArray = [];
       const querySnapshot = await getDocs(collection(db, "books"));
       querySnapshot.forEach((doc) => {
-        libArray.push(doc.data());
+        libArray.push({ id: doc.id, ...doc.data() });
         console.log(`${doc.id} => ${doc.data().title}`);
       });
+      console.log("LIBARRAY", libArray);
       setLibrary(libArray);
     }
     getLibrary();
@@ -49,6 +50,12 @@ function App() {
     getUsers();
   }, [view]);
 
+  //handlers
+  async function updateBook(bookId, payload) {
+    console.log(`UPDATING book ${bookId} with ${payload}`);
+    await updateDoc(doc(db, "books", bookId), payload);
+  }
+
   return (
     <div className="App">
       <header className="App-header">Kids Book Share Library</header>
@@ -57,7 +64,7 @@ function App() {
         <button onClick={() => setView("library")}>Library</button>
         <button onClick={() => setView("users")}>Show Users</button>
         {view === "addbook" && <AddBook setView={setView} />}
-        {view === "library" && <Library library={library} />}
+        {view === "library" && <Library library={library} updateBook={updateBook} />}
         {view === "users" && <Users usersArr={usersArr} />}
       </div>
     </div>

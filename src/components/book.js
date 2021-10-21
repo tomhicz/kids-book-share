@@ -7,9 +7,9 @@ const StyledBook = styled.div`
   display: inline-block;
 `;
 
-export default function Book({ book }) {
+export default function Book({ book, updateBook }) {
   //state
-  console.log("PROPS", book);
+  //console.log("PROPS", book);
 
   //hooks
   // useEffect(() => {
@@ -25,6 +25,7 @@ export default function Book({ book }) {
   //handlers
   function handleRequest() {
     console.log("book requested");
+    updateBook(book.id, { requested: true });
   }
 
   return (
