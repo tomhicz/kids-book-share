@@ -9,9 +9,12 @@ const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin: 1rem auto;
+  max-width: 80rem;
+  gap: 10px;
 `;
 
-export default function AddUser({ setView }) {
+export default function AddUser() {
   //state
   const { user } = useAuthState();
   const history = useHistory();

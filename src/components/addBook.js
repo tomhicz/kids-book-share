@@ -3,16 +3,22 @@ import styled from "styled-components";
 
 import { collection, addDoc } from "firebase/firestore";
 import { db, useAuthState } from "../firebase";
+import { useHistory } from "react-router-dom";
 
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin: 1rem auto;
+  max-width: 80rem;
+  gap: 10px;
 `;
 
-export default function AddBook({ setView }) {
+export default function AddBook() {
   //state
   const { user } = useAuthState();
+  const history = useHistory();
+
   const [inputs, setInputs] = useState({
     conditionok: false,
     requested: false,
@@ -52,7 +58,7 @@ export default function AddBook({ setView }) {
       try {
         const docRef = await addDoc(collection(db, "books"), inputs);
         console.log("Document written with ID: ", docRef.id);
-        setView("library");
+        history.push("/mybooks");
       } catch (e) {
         console.error("Error adding document: ", e);
       }

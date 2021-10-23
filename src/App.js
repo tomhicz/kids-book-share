@@ -3,11 +3,12 @@ import "./App.css";
 import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { AuthContextProvider, db, useAuthState } from "./firebase.js";
 import { useEffect, useState } from "react";
+import { Redirect, Route, BrowserRouter as Router } from "react-router-dom";
 
 import Library from "./components/Library";
 import Users from "./components/Users";
 import AddBook from "./components/addBook";
-import { Redirect, Route, BrowserRouter as Router } from "react-router-dom";
+
 import { SignUp } from "./Signup";
 import { Login } from "./Login";
 import NavBar from "./components/NavBar";
@@ -53,6 +54,7 @@ function App() {
   //State
   const [usersArr, setUsers] = useState([]);
   const [library, setLibrary] = useState([]);
+  const [changes, setChanges] = useState(false);
 
   //Hooks
   useEffect(() => {
@@ -67,7 +69,7 @@ function App() {
       setLibrary(libArray);
     }
     getLibrary();
-  }, []);
+  }, [changes]);
   useEffect(() => {
     async function getUsers() {
       const userArray = [];
@@ -84,34 +86,37 @@ function App() {
   //handlers
   async function updateBook(bookId, payload) {
     console.log(`UPDATING book ${bookId} with ${payload}`);
+    setChanges(!changes);
     await updateDoc(doc(db, "books", bookId), payload);
   }
   async function deleteBook(bookId) {
     console.log(`DELETING book ${bookId}!`);
+    setChanges(!changes);
     await deleteDoc(doc(db, "books", bookId));
   }
 
   return (
     <AuthContextProvider>
       <Router>
-        <header className="App-header">Kids Book Share Library</header>
-        <NavBar />
-        <Route exact path="/">
-          <Library library={library} updateBook={updateBook} deleteBook={deleteBook} />
-        </Route>
-        <AuthenticatedRoute
-          exact
-          path="/mybooks"
-          component={MyBooks}
-          library={library}
-          updateBook={updateBook}
-          deleteBook={deleteBook}
-        />
-        <AuthenticatedRoute exact path="/users" component={Users} usersArr={usersArr} />
-        <AuthenticatedRoute exact path="/addbook" component={AddBook} />
-        <AuthenticatedRoute exact path="/adduser" component={AddUser} />
-        <UnauthenticatedRoute exact path="/login" component={Login} />
-        <UnauthenticatedRoute exact path="/signup" component={SignUp} />
+        <div className="App">
+          <NavBar />
+          <Route exact path="/">
+            <Library library={library} updateBook={updateBook} deleteBook={deleteBook} />
+          </Route>
+          <AuthenticatedRoute
+            exact
+            path="/mybooks"
+            component={MyBooks}
+            library={library}
+            updateBook={updateBook}
+            deleteBook={deleteBook}
+          />
+          <AuthenticatedRoute exact path="/users" component={Users} usersArr={usersArr} />
+          <AuthenticatedRoute exact path="/addbook" component={AddBook} />
+          <AuthenticatedRoute exact path="/adduser" component={AddUser} />
+          <UnauthenticatedRoute exact path="/login" component={Login} />
+          <UnauthenticatedRoute exact path="/signup" component={SignUp} />
+        </div>
       </Router>
     </AuthContextProvider>
   );

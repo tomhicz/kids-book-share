@@ -24,7 +24,7 @@ export default function MyBooks({ library, updateBook, deleteBook }) {
       })}
       <h3>Requested:</h3>
       {library.map((val, id) => {
-        if (val.requester && val.requester === userId && !val.received) {
+        if (val.requester && val.requester === userId && !val.received && !val.sent) {
           return <Book key={id} book={val} updateBook={updateBook} deleteBook={deleteBook} />;
         }
         return null;
