@@ -11,7 +11,9 @@ export default function Library({ library, updateBook }) {
     <div>
       <h2>Library:</h2>
       {library.map((val, id) => {
-        return <Book key={id} book={val} updateBook={updateBook} />;
+        if (!val.received) {
+          return <Book key={id} book={val} updateBook={updateBook} />;
+        }
       })}
     </div>
   );

@@ -16,14 +16,14 @@ export default function MyBooks({ library, updateBook }) {
       <h2>My Books:</h2>
       <h3>Offering:</h3>
       {library.map((val, id) => {
-        if (val.owner === userId) {
+        if (val.owner === userId && !val.requested) {
           console.log(val);
           return <Book key={id} book={val} updateBook={updateBook} />;
         }
       })}
       <h3>Requested:</h3>
       {library.map((val, id) => {
-        if (val.requester && val.requester === userId) {
+        if (val.requester && val.requester === userId && !val.received) {
           return <Book key={id} book={val} updateBook={updateBook} />;
         }
       })}
@@ -35,7 +35,19 @@ export default function MyBooks({ library, updateBook }) {
       })}
       <h3>Sent (in transit):</h3>
       {library.map((val, id) => {
-        if (val.owner === userId && val.sent && !val.recieved) {
+        if ((val.owner === userId || val.requester === userId) && val.sent && !val.received) {
+          return <Book key={id} book={val} updateBook={updateBook} />;
+        }
+      })}
+      <h3>They Received:</h3>
+      {library.map((val, id) => {
+        if (val.owner === userId && val.sent && val.received) {
+          return <Book key={id} book={val} updateBook={updateBook} />;
+        }
+      })}
+      <h3>I Recieved:</h3>
+      {library.map((val, id) => {
+        if (val.requester === userId && val.sent && val.received) {
           return <Book key={id} book={val} updateBook={updateBook} />;
         }
       })}

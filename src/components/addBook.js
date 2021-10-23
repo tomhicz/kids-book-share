@@ -17,7 +17,7 @@ export default function AddBook({ setView }) {
     conditionok: false,
     requested: false,
     sent: false,
-    recieved: false,
+    received: false,
     owner: `users/${user.uid}`,
   });
 

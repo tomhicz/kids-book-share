@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAuthState } from "../firebase";
 
 const StyledBook = styled.div`
   border: 1px solid gray;
@@ -9,6 +10,9 @@ const StyledBook = styled.div`
 
 export default function Book({ book, updateBook }) {
   //state
+  const { user } = useAuthState();
+  const userId = `users/${user.uid}`;
+
   const [img, setImg] = useState("");
 
   //hooks
@@ -31,7 +35,15 @@ export default function Book({ book, updateBook }) {
   //handlers
   function handleRequest() {
     console.log("book requested");
-    updateBook(book.id, { requested: true });
+    updateBook(book.id, { requested: true, requester: userId });
+  }
+  function handleSent() {
+    console.log("book sent");
+    updateBook(book.id, { sent: true });
+  }
+  function handleReceived() {
+    console.log("book received");
+    updateBook(book.id, { received: true });
   }
 
   return (
@@ -40,7 +52,18 @@ export default function Book({ book, updateBook }) {
       {/* <img alt="" src={img} /> */}
       <div>Author: {book.author}</div>
       <div>Available: {!book.requested ? "yes" : "no"}</div>
-      <button onClick={handleRequest}>RequestBook</button>
+      <button onClick={handleRequest} disabled={book.requested || book.owner === userId}>
+        Request Book
+      </button>
+      <button onClick={handleSent} disabled={book.sent || book.owner !== userId}>
+        Mark Sent
+      </button>
+      <button
+        onClick={handleReceived}
+        disabled={book.received || !book.sent || book.requester !== userId}
+      >
+        Mark Received
+      </button>
     </StyledBook>
   );
 }
