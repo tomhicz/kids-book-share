@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, useAuthState } from "../firebase";
 
 const StyledForm = styled.form`
   display: flex;
@@ -12,11 +12,13 @@ const StyledForm = styled.form`
 
 export default function AddBook({ setView }) {
   //state
+  const { user } = useAuthState();
   const [inputs, setInputs] = useState({
     conditionok: false,
     requested: false,
     sent: false,
     recieved: false,
+    owner: `users/${user.uid}`,
   });
 
   //hooks
@@ -62,7 +64,13 @@ export default function AddBook({ setView }) {
     <StyledForm onSubmit={handleSubmit}>
       <label>
         Title:
-        <input type="text" name="title" value={inputs.title || ""} onChange={handleChange}></input>
+        <input
+          required
+          type="text"
+          name="title"
+          value={inputs.title || ""}
+          onChange={handleChange}
+        ></input>
       </label>
       <label>
         Author:
@@ -76,6 +84,7 @@ export default function AddBook({ setView }) {
       <label>
         Is the condition ok?
         <input
+          required
           type="checkbox"
           name="conditionok"
           checked={inputs.conditionok || false}
@@ -115,7 +124,7 @@ export default function AddBook({ setView }) {
       </label>
       <label>
         Owner (auto user)
-        <input type="text" name="owner" value={inputs.owner || ""} onChange={handleChange}></input>
+        <input type="text" name="owner" value={inputs.owner || ""} readOnly></input>
       </label>
       <input type="submit" />
     </StyledForm>

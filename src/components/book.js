@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const StyledBook = styled.div`
@@ -9,15 +9,21 @@ const StyledBook = styled.div`
 
 export default function Book({ book, updateBook }) {
   //state
-  //console.log("PROPS", book);
+  const [img, setImg] = useState("");
 
   //hooks
   // useEffect(() => {
   //   async function getBookInfo() {
+  //     let bookObj;
   //     const bookInfo = await fetch(
-  //       `https://www.googleapis.com/books/v1/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
+  //       `/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
   //     );
-  //     console.log("bookinfo:", bookInfo);
+  //     bookInfo.text().then((text) => {
+  //       bookObj = JSON.parse(text);
+  //       //Use regex or spliec to remove edge=curl&
+  //       console.log(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
+  //       setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
+  //     });
   //   }
   //   getBookInfo();
   // }, []);
@@ -31,6 +37,7 @@ export default function Book({ book, updateBook }) {
   return (
     <StyledBook>
       <div>Title: {book.title}</div>
+      {/* <img alt="" src={img} /> */}
       <div>Author: {book.author}</div>
       <div>Available: {!book.requested ? "yes" : "no"}</div>
       <button onClick={handleRequest}>RequestBook</button>
