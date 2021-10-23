@@ -15,15 +15,6 @@ import NavBar from "./components/NavBar";
 import AddUser from "./components/AddUser";
 import MyBooks from "./components/MyBooks";
 
-//Methods
-// const createGroceryList = (userName) => {
-//   return db.collection('groceryLists')
-//       .add({
-//           created: firebase.firestore.FieldValue.serverTimestamp(),
-//           users: [{ name: userName}]
-//       });
-// };
-
 //Authentication
 const AuthenticatedRoute = ({ component: C, ...props }) => {
   const { isAuthenticated } = useAuthState();

@@ -15,27 +15,35 @@ const StyledBook = styled.div`
 
 export default function Book({ book, updateBook, deleteBook }) {
   //state
-  const { user } = useAuthState();
-  const userId = `users/${user.uid}`;
+  const { user, isAuthenticated } = useAuthState();
+  let userId = null;
+  if (user && user.uid) {
+    userId = `users/${user.uid}`;
+  }
 
   const [img, setImg] = useState("");
 
   //hooks
   useEffect(() => {
     async function getBookInfo() {
-      let bookObj;
-      const bookInfo = await fetch(
-        `/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
-      );
-      bookInfo.text().then((text) => {
-        bookObj = JSON.parse(text);
-        //Use regex or spliec to remove edge=curl&
-        console.log(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
-        setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
-      });
+      if (!book.picurl) {
+        let bookObj;
+        const bookInfo = await fetch(
+          `/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
+        );
+        bookInfo.text().then((text) => {
+          bookObj = JSON.parse(text);
+          //Use regex or spliec to remove edge=curl&
+          console.log(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
+          setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
+          updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail });
+        });
+      } else {
+        setImg(book.picurl);
+      }
     }
     getBookInfo();
-  }, []);
+  }, [book.title]);
 
   //handlers
   function handleRequest() {
@@ -66,7 +74,10 @@ export default function Book({ book, updateBook, deleteBook }) {
       <div>Author: {book.author}</div>
       <div>Available: {!book.requested ? "yes" : "no"}</div>
       <div className="buttons">
-        <button onClick={handleRequest} disabled={book.requested || book.owner === userId}>
+        <button
+          onClick={handleRequest}
+          disabled={!isAuthenticated || book.requested || book.owner === userId}
+        >
           Request Book
         </button>
         <button
