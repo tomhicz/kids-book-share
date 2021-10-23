@@ -8,7 +8,7 @@ const StyledBook = styled.div`
   display: inline-block;
 `;
 
-export default function Book({ book, updateBook }) {
+export default function Book({ book, updateBook, deleteBook }) {
   //state
   const { user } = useAuthState();
   const userId = `users/${user.uid}`;
@@ -45,6 +45,10 @@ export default function Book({ book, updateBook }) {
     console.log("book received");
     updateBook(book.id, { received: true });
   }
+  function handleDelete() {
+    console.log("book deleted");
+    deleteBook(book.id);
+  }
 
   return (
     <StyledBook>
@@ -55,7 +59,7 @@ export default function Book({ book, updateBook }) {
       <button onClick={handleRequest} disabled={book.requested || book.owner === userId}>
         Request Book
       </button>
-      <button onClick={handleSent} disabled={book.sent || book.owner !== userId}>
+      <button onClick={handleSent} disabled={!book.requested || book.sent || book.owner !== userId}>
         Mark Sent
       </button>
       <button
@@ -63,6 +67,12 @@ export default function Book({ book, updateBook }) {
         disabled={book.received || !book.sent || book.requester !== userId}
       >
         Mark Received
+      </button>
+      <button
+        onClick={handleDelete}
+        disabled={book.requested || book.sent || book.received || book.owner !== userId}
+      >
+        Delete!
       </button>
     </StyledBook>
   );

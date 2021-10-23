@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { AuthContextProvider, db, useAuthState } from "./firebase.js";
 import { useEffect, useState } from "react";
 
@@ -86,6 +86,10 @@ function App() {
     console.log(`UPDATING book ${bookId} with ${payload}`);
     await updateDoc(doc(db, "books", bookId), payload);
   }
+  async function deleteBook(bookId) {
+    console.log(`DELETING book ${bookId}!`);
+    await deleteDoc(doc(db, "books", bookId));
+  }
 
   return (
     <AuthContextProvider>
@@ -93,7 +97,7 @@ function App() {
         <header className="App-header">Kids Book Share Library</header>
         <NavBar />
         <Route exact path="/">
-          <Library library={library} updateBook={updateBook} />
+          <Library library={library} updateBook={updateBook} deleteBook={deleteBook} />
         </Route>
         <AuthenticatedRoute
           exact
@@ -101,6 +105,7 @@ function App() {
           component={MyBooks}
           library={library}
           updateBook={updateBook}
+          deleteBook={deleteBook}
         />
         <AuthenticatedRoute exact path="/users" component={Users} usersArr={usersArr} />
         <AuthenticatedRoute exact path="/addbook" component={AddBook} />

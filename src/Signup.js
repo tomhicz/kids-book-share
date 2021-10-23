@@ -6,33 +6,36 @@ import { db } from "./firebase";
 
 export const SignUp = () => {
   const history = useHistory();
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    const { email, password } = e.target.elements;
-    const auth = getAuth();
-    try {
-      const userInfo = await createUserWithEmailAndPassword(auth, email.value, password.value);
-      const userUid = userInfo?.user.uid || null;
-      //Create basic app user
-      async function addBasicUser() {
-        try {
-          await setDoc(doc(db, "users", userUid), {
-            email: userInfo.user.email,
-          });
-          console.log("Document written with ID: ", userUid);
-        } catch (e) {
-          console.error("Error adding document: ", e);
+      const { email, password } = e.target.elements;
+      const auth = getAuth();
+      try {
+        const userInfo = await createUserWithEmailAndPassword(auth, email.value, password.value);
+        const userUid = userInfo?.user.uid || null;
+        //Create basic app user
+        async function addBasicUser() {
+          try {
+            await setDoc(doc(db, "users", userUid), {
+              email: userInfo.user.email,
+            });
+            console.log("Document written with ID: ", userUid);
+          } catch (e) {
+            console.error("Error adding document: ", e);
+          }
         }
-      }
-      addBasicUser();
+        addBasicUser();
 
-      //Go to signup page
-      history.push("/adduser");
-    } catch (e) {
-      alert(e.message);
-    }
-  }, []);
+        //Go to signup page
+        history.push("/adduser");
+      } catch (e) {
+        alert(e.message);
+      }
+    },
+    [history]
+  );
 
   return (
     <>
