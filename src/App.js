@@ -66,7 +66,7 @@ function App() {
       const userArray = [];
       const querySnapshot = await getDocs(collection(db, "users"));
       querySnapshot.forEach((doc) => {
-        userArray.push(doc.data());
+        userArray.push({ id: `users/${doc.id}`, ...doc.data() });
         console.log(`${doc.id} => ${doc.data().username}`);
       });
       setUsers(userArray);
@@ -101,6 +101,7 @@ function App() {
             library={library}
             updateBook={updateBook}
             deleteBook={deleteBook}
+            usersArr={usersArr}
           />
           <AuthenticatedRoute exact path="/users" component={Users} usersArr={usersArr} />
           <AuthenticatedRoute exact path="/addbook" component={AddBook} />

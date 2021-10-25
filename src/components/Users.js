@@ -9,7 +9,7 @@ import User from "./user";
 
 //handlers
 
-export default function Library({ usersArr }) {
+export default function Users({ usersArr }) {
   const { user } = useAuthState();
   console.log(user);
 

@@ -1,8 +1,15 @@
 import React from "react";
 import Book from "./book";
 import { useAuthState } from "../firebase";
+import UserAddress from "./UserAddress";
+import styled from "styled-components";
 
-export default function MyBooks({ library, updateBook, deleteBook }) {
+const StyledBookAddr = styled.div`
+  border: 1px solid #ddd;
+  display: inline-flex;
+`;
+
+export default function MyBooks({ library, updateBook, deleteBook, usersArr }) {
   //state
   const { user } = useAuthState();
   const userId = `users/${user.uid}`;
@@ -32,7 +39,12 @@ export default function MyBooks({ library, updateBook, deleteBook }) {
       <h3>To be sent:</h3>
       {library.map((val, id) => {
         if (val.owner === userId && val.requested && !val.sent) {
-          return <Book key={id} book={val} updateBook={updateBook} deleteBook={deleteBook} />;
+          return (
+            <StyledBookAddr key={id}>
+              <Book book={val} updateBook={updateBook} deleteBook={deleteBook} />
+              <UserAddress userId={val.requester} usersArr={usersArr} />
+            </StyledBookAddr>
+          );
         }
         return null;
       })}
