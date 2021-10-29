@@ -18,7 +18,7 @@ import MyBooks from "./components/MyBooks";
 //Authentication
 const AuthenticatedRoute = ({ component: C, ...props }) => {
   const { isAuthenticated } = useAuthState();
-  console.log(`AuthenticatedRoute: ${isAuthenticated}`);
+  //console.log(`AuthenticatedRoute: ${isAuthenticated}`);
   return (
     <Route
       {...props}
@@ -30,7 +30,7 @@ const AuthenticatedRoute = ({ component: C, ...props }) => {
 };
 const UnauthenticatedRoute = ({ component: C, ...props }) => {
   const { isAuthenticated } = useAuthState();
-  console.log(`UnauthenticatedRoute: ${isAuthenticated}`);
+  //console.log(`UnauthenticatedRoute: ${isAuthenticated}`);
   return (
     <Route
       {...props}
@@ -54,7 +54,7 @@ function App() {
       const querySnapshot = await getDocs(collection(db, "books"));
       querySnapshot.forEach((doc) => {
         libArray.push({ id: doc.id, ...doc.data() });
-        console.log(`${doc.id} => ${doc.data().title}`);
+        // console.log(`${doc.id} => ${doc.data().title}`);
       });
       console.log("LIBARRAY", libArray);
       setLibrary(libArray);
@@ -67,7 +67,7 @@ function App() {
       const querySnapshot = await getDocs(collection(db, "users"));
       querySnapshot.forEach((doc) => {
         userArray.push({ id: `users/${doc.id}`, ...doc.data() });
-        console.log(`${doc.id} => ${doc.data().username}`);
+        // console.log(`${doc.id} => ${doc.data().username}`);
       });
       setUsers(userArray);
     }

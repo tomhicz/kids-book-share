@@ -41,11 +41,12 @@ export default function Book({ book, updateBook, deleteBook }) {
           bookInfo.text().then((text) => {
             bookObj = JSON.parse(text);
             //Use regex or spliec to remove edge=curl&
-            console.log(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
+            console.log('cover info', bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
             setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
             updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail });
           });
         } catch (error) {
+          console.log('ERROR getting book cover info')
           console.error(error)
         }
       } else {
