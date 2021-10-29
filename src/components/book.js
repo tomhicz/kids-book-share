@@ -4,12 +4,17 @@ import { useAuthState } from "../firebase";
 
 const StyledBook = styled.div`
   border: 1px solid gray;
+  background-color: #fffeec;
   margin: 2px;
   display: inline-block;
   .buttons {
     display: flex;
     flex-direction: column;
     gap: 1px;
+  }
+  h3 {
+    margin: 0;
+    color: #264653;
   }
 `;
 
@@ -28,22 +33,27 @@ export default function Book({ book, updateBook, deleteBook }) {
     async function getBookInfo() {
       if (!book.picurl) {
         let bookObj;
-        const bookInfo = await fetch(
-          `/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
-        );
-        bookInfo.text().then((text) => {
-          bookObj = JSON.parse(text);
-          //Use regex or spliec to remove edge=curl&
-          console.log(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
-          setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
-          updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail });
-        });
+        try {
+          const bookInfo = await fetch(
+            `/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
+          );
+          console.log('BOOK INFO', bookInfo);
+          bookInfo.text().then((text) => {
+            bookObj = JSON.parse(text);
+            //Use regex or spliec to remove edge=curl&
+            console.log(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
+            setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
+            updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail });
+          });
+        } catch (error) {
+          console.error(error)
+        }
       } else {
         setImg(book.picurl);
       }
     }
     getBookInfo();
-  }, [book.title]);
+  }, [book.title,  book.id, book.picurl, updateBook]);
 
   //handlers
   function handleRequest() {
@@ -69,10 +79,10 @@ export default function Book({ book, updateBook, deleteBook }) {
 
   return (
     <StyledBook>
-      <div>Title: {book.title}</div>
+      <h3>{book.title}</h3>
       <img alt="" src={img} />
-      <div>Author: {book.author}</div>
-      <div>Available: {!book.requested ? "yes" : "no"}</div>
+      <div>By: {book.author}</div>
+      <div>{!book.requested ? "Available" : "Not Available"}</div>
       <div className="buttons">
         <button
           onClick={handleRequest}
