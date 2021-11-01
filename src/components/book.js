@@ -32,18 +32,22 @@ export default function Book({ book, updateBook, deleteBook }) {
   useEffect(() => {
     async function getBookInfo() {
       if (!book.picurl) {
+        let bookInfoPath1 = ''
+        if (process.env.NODE_ENV === 'production') {
+          bookInfoPath1 = 'https://www.googleapis.com/books/v1'
+        }
         let bookObj;
         try {
           const bookInfo = await fetch(
-            `/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
+            `${bookInfoPath1}/volumes?q=intitle:${book.title}&langRestrict=en&printType=books&projection=lite`
           );
-          console.log('BOOK INFO', bookInfo);
+          //console.log('BOOK INFO', bookInfo);
           bookInfo.text().then((text) => {
             bookObj = JSON.parse(text);
             //Use regex or spliec to remove edge=curl&
-            console.log('cover info', bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
-            setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail || "");
-            updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail });
+            //console.log('cover info', bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
+            setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail.replace('http:', 'https:').replace('&edge=curl','') || "");
+            updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail.replace('http:', 'https:').replace('&edge=curl','') });
           });
         } catch (error) {
           console.log('ERROR getting book cover info')
