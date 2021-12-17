@@ -31,7 +31,7 @@ const StyledForm = styled.form`
   }
 `;
 
-export default function AddBook() {
+export default function AddBook({ refreshLibrary }) {
   //state
   const { user } = useAuthState();
   const history = useHistory();
@@ -75,6 +75,7 @@ export default function AddBook() {
       try {
         const docRef = await addDoc(collection(db, "books"), inputs);
         console.log("Document written with ID: ", docRef.id);
+        refreshLibrary();
         history.push("/mybooks");
       } catch (e) {
         console.error("Error adding document: ", e);

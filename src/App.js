@@ -60,7 +60,7 @@ function App() {
       setLibrary(libArray);
     }
     getLibrary();
-  }, [changes]);
+  }, [changes, setChanges]);
   useEffect(() => {
     async function getUsers() {
       const userArray = [];
@@ -85,6 +85,9 @@ function App() {
     setChanges(!changes);
     await deleteDoc(doc(db, "books", bookId));
   }
+  async function refreshLibrary() {
+    setChanges(!changes);
+  }
 
   return (
     <AuthContextProvider>
@@ -104,7 +107,12 @@ function App() {
             usersArr={usersArr}
           />
           <AuthenticatedRoute exact path="/users" component={Users} usersArr={usersArr} />
-          <AuthenticatedRoute exact path="/addbook" component={AddBook} />
+          <AuthenticatedRoute
+            exact
+            path="/addbook"
+            component={AddBook}
+            refreshLibrary={refreshLibrary}
+          />
           <AuthenticatedRoute exact path="/adduser" component={AddUser} />
           <UnauthenticatedRoute exact path="/login" component={Login} />
           <UnauthenticatedRoute exact path="/signup" component={SignUp} />
