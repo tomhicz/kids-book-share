@@ -3,10 +3,15 @@ import { NavLink } from "react-router-dom";
 import { useAuthState } from "../firebase";
 import { getAuth, signOut } from "firebase/auth";
 import styled from "styled-components";
+import logo from "../assets/logo.png";
 
 const StyledNavBar = styled.nav`
-  background-color: #264653;
-  color: #ffe8d6;
+  background-color: #7b56c4;
+  background-image: url(${logo});
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  color: #fefefe;
   padding: 5px;
   header {
     font-size: 2rem;
@@ -17,7 +22,7 @@ const StyledNavBar = styled.nav`
     text-decoration: none;
   }
   a.needAuth {
-    color: ${(props) => (props.isAuth ? "white" : "gray")};
+    color: ${(props) => (props.isAuth ? "white" : "darkgray")};
   }
 `;
 
@@ -38,8 +43,9 @@ export default function NavBar(props) {
       |{" "}
       <NavLink className="needAuth" to="/addbook">
         Add Book
-      </NavLink>{" "}
-      |{"   "}
+      </NavLink>
+      &nbsp;&nbsp;
+      {"   [ "}
       <NavLink className="needAuth" to="/users">
         Users
       </NavLink>{" "}
@@ -47,13 +53,7 @@ export default function NavBar(props) {
       <NavLink className="needAuth" to="/adduser">
         Update User
       </NavLink>
-      {/* {!isAuthenticated ? (
-        <span>
-          | <NavLink to="/login">Login</NavLink> | <NavLink to="/signup">Sign Up</NavLink>
-        </span>
-      ) : (
-        ""
-      )}{" "} */}
+      {" ] "}
       <span>
         {isAuthenticated ? (
           <span>

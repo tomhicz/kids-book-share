@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { useAuthState } from "../firebase";
 
 const StyledBook = styled.div`
-  border: 1px solid gray;
+  border: 1px solid ${(props) => (props.req ? "lightgray" : "gray")};
+  color: ${(props) => (props.req ? "lightgray" : "#264653")};
   background-color: #fffeec;
   margin: 2px;
   display: inline-block;
@@ -15,6 +16,7 @@ const StyledBook = styled.div`
   h3 {
     margin: 0;
     color: #264653;
+    color: ${(props) => (props.req ? "lightgray" : "#264653")};
   }
 `;
 
@@ -32,9 +34,9 @@ export default function Book({ book, updateBook, deleteBook }) {
   useEffect(() => {
     async function getBookInfo() {
       if (!book.picurl) {
-        let bookInfoPath1 = ''
-        if (process.env.NODE_ENV === 'production') {
-          bookInfoPath1 = 'https://www.googleapis.com/books/v1'
+        let bookInfoPath1 = "";
+        if (process.env.NODE_ENV === "production") {
+          bookInfoPath1 = "https://www.googleapis.com/books/v1";
         }
         let bookObj;
         try {
@@ -46,19 +48,27 @@ export default function Book({ book, updateBook, deleteBook }) {
             bookObj = JSON.parse(text);
             //Use regex or spliec to remove edge=curl&
             //console.log('cover info', bookObj.items[0].volumeInfo.imageLinks.smallThumbnail);
-            setImg(bookObj.items[0].volumeInfo.imageLinks.smallThumbnail.replace('http:', 'https:').replace('&edge=curl','') || "");
-            updateBook(book.id, { picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail.replace('http:', 'https:').replace('&edge=curl','') });
+            setImg(
+              bookObj.items[0].volumeInfo.imageLinks.smallThumbnail
+                .replace("http:", "https:")
+                .replace("&edge=curl", "") || ""
+            );
+            updateBook(book.id, {
+              picurl: bookObj.items[0].volumeInfo.imageLinks.smallThumbnail
+                .replace("http:", "https:")
+                .replace("&edge=curl", ""),
+            });
           });
         } catch (error) {
-          console.log('ERROR getting book cover info')
-          console.error(error)
+          console.log("ERROR getting book cover info");
+          console.error(error);
         }
       } else {
         setImg(book.picurl);
       }
     }
     getBookInfo();
-  }, [book.title,  book.id, book.picurl, updateBook]);
+  }, [book.title, book.id, book.picurl, updateBook]);
 
   //handlers
   function handleRequest() {
@@ -83,7 +93,7 @@ export default function Book({ book, updateBook, deleteBook }) {
   }
 
   return (
-    <StyledBook>
+    <StyledBook req={book.requested}>
       <h3>{book.title}</h3>
       <img alt="" src={img} />
       <div>By: {book.author}</div>
